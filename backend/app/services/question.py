@@ -9,8 +9,8 @@ class QuestionService:
     def __init__(self, repo: QuestionRepository):
         self.repo = repo
 
-    async def list(self, project_id, page, page_size):
-        return await self.repo.list(project_id, page, page_size)
+    async def list(self, project_id, page, page_size, search=None, status=None, sort="created_at"):
+        return await self.repo.list(project_id, page, page_size, search, status, sort)
 
     async def get(self, question_id):
         item = await self.repo.get(question_id)

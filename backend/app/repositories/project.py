@@ -17,9 +17,10 @@ class ProjectRepository:
         sort_column = getattr(Project, sort, Project.created_at)
         query = query.order_by(sort_column.desc()).offset((page - 1) * page_size).limit(page_size)
         items = list((await self.db.scalars(query)).all())
-        total = await self.db.scalar(
-            select(func.count()).select_from(Project).where(Project.deleted_at.is_(None))
-        )
+        count_query = select(func.count()).select_from(Project).where(Project.deleted_at.is_(None))
+        if search:
+            count_query = count_query.where(Project.name.ilike(f"%{search}%"))
+        total = await self.db.scalar(count_query)
         return items, int(total or 0)
 
     async def get(self, project_id: UUID):

@@ -36,8 +36,8 @@ app.include_router(router, prefix=settings.api_prefix)
 @app.exception_handler(AppException)
 async def app_exception_handler(_: Request, exc: AppException):
     return JSONResponse(
-        exc.status_code,
-        {
+        status_code=exc.status_code,
+        content={
             "success": False,
             "message": exc.message,
             "errors": exc.errors,
@@ -48,8 +48,8 @@ async def app_exception_handler(_: Request, exc: AppException):
 @app.exception_handler(RequestValidationError)
 async def validation_handler(_: Request, exc: RequestValidationError):
     return JSONResponse(
-        422,
-        {
+        status_code=422,
+        content={
             "success": False,
             "message": "Validation failed",
             "errors": [
@@ -67,8 +67,8 @@ async def validation_handler(_: Request, exc: RequestValidationError):
 async def unexpected_handler(_: Request, exc: Exception):
     logger.exception("Unhandled exception", exc_info=exc)
     return JSONResponse(
-        500,
-        {
+        status_code=500,
+        content={
             "success": False,
             "message": "An unexpected error occurred",
             "errors": [],

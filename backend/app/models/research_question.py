@@ -19,7 +19,15 @@ class ResearchQuestion(UUIDModel):
     title: Mapped[str] = mapped_column(String(240))
     description: Mapped[str | None] = mapped_column(Text())
     status: Mapped[QuestionStatus] = mapped_column(
-        Enum(QuestionStatus),
+        Enum(
+            QuestionStatus,
+            values_callable=lambda statuses: [status.value for status in statuses],
+        ),
         default=QuestionStatus.OPEN,
     )
     project = relationship("Project", back_populates="questions")
+    literature = relationship(
+        "Literature",
+        back_populates="question",
+        cascade="all, delete-orphan",
+    )

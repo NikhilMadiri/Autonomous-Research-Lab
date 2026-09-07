@@ -70,9 +70,12 @@ async def list_questions(
     project_id: UUID,
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
+    search: str | None = None,
+    status: str | None = None,
+    sort: str = "created_at",
     service: QuestionService = Depends(get_question_service),  # noqa: B008
 ):
-    items, total = await service.list(project_id, page, page_size)
+    items, total = await service.list(project_id, page, page_size, search, status, sort)
     return {
         "data": {
             "items": items,

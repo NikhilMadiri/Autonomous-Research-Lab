@@ -18,7 +18,9 @@ class Project(UUIDModel):
     name: Mapped[str] = mapped_column(String(160), index=True)
     description: Mapped[str | None] = mapped_column(Text())
     status: Mapped[ProjectStatus] = mapped_column(
-        Enum(ProjectStatus),
+        Enum( ProjectStatus,
+        values_callable=lambda enum: [e.value for e in enum],
+        name="projectstatus",),
         default=ProjectStatus.DRAFT,
     )
     owner = relationship("User", back_populates="projects")
